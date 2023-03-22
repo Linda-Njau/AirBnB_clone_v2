@@ -128,7 +128,7 @@ class HBNBCommand(cmd.Cmd):
                 key = key_value[0]
                 value = key_value[1]
                 if value.startswith('"') and value.endswith('"'):
-                    value = value[1:-1].replace("_"," ").replace('\\"', '"')
+                  value = value[1:-1].replace("_", " ").replace('\\"', '"')
                 elif "." in value:
                     try:
                         value = float(value)    
