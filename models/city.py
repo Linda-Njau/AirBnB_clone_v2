@@ -9,6 +9,6 @@ from sqlalchemy.orm import relationship
 
 class City(BaseModel, Base):
     """ The city class, contains state ID and name """
-    name = Column(string(128), nullable=False)
-    state_id = Column(string(60), ForeignKey("states.id"), nullable=False)
+    name = Column(String(128), nullable=False)
+    state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
     places = relationship("place", backref="cities", cascade="delete")
