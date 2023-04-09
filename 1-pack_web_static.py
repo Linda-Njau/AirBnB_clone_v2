@@ -9,9 +9,7 @@ from os.path import isdir
 
 
 def do_pack():
-    """
-    function to generate a .tgz archive from web_static
-    """
+    """function to generate a .tgz archive from web_static """
     try
         now = datetime.now().strftime('%Y%m%d%H%M%S')
         if not isdir('versions'):
