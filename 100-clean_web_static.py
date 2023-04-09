@@ -28,4 +28,3 @@ def do_clean(number=0):
         [archives.pop() for i in range(number)]
         for a in archives:
             run("rm -rf ./{}".format(a))
-
