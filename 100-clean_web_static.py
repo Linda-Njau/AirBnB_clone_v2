@@ -1,48 +1,31 @@
 #!/usr/bin/python3
-"""
-Fabric script that deletes out-of-date archives
-"""
-
+# Fabfile to delete out-of-date archives.
+import os
 from fabric.api import *
-from os import listdir, remove
-from os.path import isfile, join
 
-env.hosts = ['<IP web-01>', '<IP web-02>']
+env.hosts = ["104.196.168.90", "35.196.46.172"]
 
 
 def do_clean(number=0):
-    """
-    Deletes all unnecessary archives from versions and releases folders.
-    """
-    try:
-        number = int(number)
-        if number < 0:
-            return
-    except ValueError:
+    """Delete out-of-date archives."""
+    number = 1 if int(number) == 0 else int(number)
+
+    archives = sorted(os.listdir("versions"))
+    if len(archives) <= number:
         return
 
-    # Get a list of all archives in versions folder
-    with cd("versions"):
-        archives = sorted(listdir("."))
+    [archives.pop() for i in range(number)]
+    with lcd("versions"):
+        for a in archives:
+            local("rm ./{}".format(a))
 
-    # Delete all unnecessary archives from versions folder
-    if number == 0:
-        number = 1
-    elif number >= len(archives):
-        return
-
-    for archive in archives[:-number]:
-        if isfile(archive):
-            remove(archive)
-
-    # Get a list of all releases from both servers
     with cd("/data/web_static/releases"):
-        releases = run("ls -1").split('\n')
+        archives = run("ls -tr").split()
+        archives = [a for a in archives if "web_static_" in a]
+        if len(archives) <= number:
+            return
 
-    # Delete all unnecessary archives from both servers
-    if len(releases) <= number:
-        return
+        [archives.pop() for i in range(number)]
+        for a in archives:
+            run("rm -rf ./{}".format(a))
 
-    for release in releases[:-number]:
-        if release != "test":
-            run("sudo rm -rf /data/web_static/releases/{}/".format(release))
